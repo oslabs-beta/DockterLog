@@ -19,11 +19,11 @@ const watchers = [];
 io.on('connection', (socket) => {
   console.log('Dockter Log is listening...');
 
-  // Called only during the first time a container is selected for log collection 
+  // Called only during the first time a container is selected for log collection
   socket.on('initializeLogger', (requestedContainerId, sendResponse) => {
     const logs = [];
 
-    // TODO: Modularize this in a helper js file
+    // TODO: this function should be the entire event handler
     ((async function processLogFile() {
       try {
         const rl = createInterface({
