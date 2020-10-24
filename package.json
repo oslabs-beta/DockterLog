@@ -21,6 +21,7 @@
     "dockerode": "^3.2.1",
     "express": "^4.17.1",
     "read-last-lines": "^1.7.2",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "strip-ansi": "^6.0.0"
   }
 }

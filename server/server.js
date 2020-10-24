@@ -5,6 +5,7 @@ const fs = require('fs');
 const { createInterface } = require('readline');
 const { once } = require('events');
 const readLastLines = require('read-last-lines');
+const stripAnsi = require('strip-ansi');
 
 const app = express();
 const server = http.createServer(app);
@@ -32,6 +33,7 @@ io.on('connection', (socket) => {
 
         rl.on('line', (line) => {
           const logEntry = JSON.parse(line);
+          logEntry.log = stripAnsi(logEntry.log);
           logEntry.containerId = requestedContainerId;
 
           logs.push(logEntry);
@@ -55,8 +57,13 @@ io.on('connection', (socket) => {
       if (event === 'change') {
         readLastLines.read(logFile, 1)
           .then((line) => {
-            console.log(JSON.parse(line));
-            socket.emit('newLog', JSON.parse(line));
+            const logEntry = JSON.parse(line);
+            logEntry.log = stripAnsi(logEntry.log);
+            logEntry.containerId = requestedContainerId;
+
+            console.log(logEntry);
+
+            socket.emit('newLog', logEntry);
           });
       }
     });
