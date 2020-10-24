@@ -4,7 +4,7 @@
   "description": "Log aggregator and shipper for Dockter",
   "main": "server/server.js",
   "scripts": {
-		"start": "node server/server.js",
+    "start": "node server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,6 +20,7 @@
   "dependencies": {
     "dockerode": "^3.2.1",
     "express": "^4.17.1",
+    "read-last-lines": "^1.7.2",
     "socket.io": "^2.3.0"
   }
 }
