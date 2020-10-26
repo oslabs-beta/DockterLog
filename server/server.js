@@ -20,33 +20,29 @@ io.on('connection', (socket) => {
   console.log('Dockter Log is listening...');
 
   // Called only during the first time a container is selected for log collection
-  socket.on('initializeLogger', (requestedContainerId, sendResponse) => {
-    const logs = [];
+  socket.on('initializeLogger', async (requestedContainerId, sendResponse) => {
+    try {
+      const logs = [];
+      const rl = createInterface({
+        input: fs.createReadStream(`/containers/${requestedContainerId}/${requestedContainerId}-json.log`),
+        crlfDelay: Infinity,
+      });
 
-    // TODO: this function should be the entire event handler
-    ((async function processLogFile() {
-      try {
-        const rl = createInterface({
-          input: fs.createReadStream(`/containers/${requestedContainerId}/${requestedContainerId}-json.log`),
-          crlfDelay: Infinity,
-        });
+      rl.on('line', (line) => {
+        const logEntry = JSON.parse(line);
+        logEntry.log = stripAnsi(logEntry.log);
+        logEntry.containerId = requestedContainerId;
 
-        rl.on('line', (line) => {
-          const logEntry = JSON.parse(line);
-          logEntry.log = stripAnsi(logEntry.log);
-          logEntry.containerId = requestedContainerId;
+        logs.push(logEntry);
+      });
 
-          logs.push(logEntry);
-        });
+      await once(rl, 'close');
 
-        await once(rl, 'close');
-
-        sendResponse(logs);
-      } catch (err) {
-        // TODO: Better error handling
-        console.error(err);
-      }
-    })());
+      sendResponse(logs);
+    } catch (err) {
+      // TODO: Better error handling
+      console.error(err);
+    }
   });
 
   // Begin log collection for a specified container
