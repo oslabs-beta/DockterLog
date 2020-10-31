@@ -58,6 +58,7 @@ io.on('connection', (socket) => {
             // logEntry.log = stripAnsi(logEntry.log);
             logEntry.containerId = requestedContainerId;
 
+            // TODO: Remove console log
             console.log(logEntry);
 
             socket.emit('newLog', logEntry);
