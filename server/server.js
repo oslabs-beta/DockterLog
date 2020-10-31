@@ -5,7 +5,7 @@ const fs = require('fs');
 const { createInterface } = require('readline');
 const { once } = require('events');
 const readLastLines = require('read-last-lines');
-const stripAnsi = require('strip-ansi');
+// const stripAnsi = require('strip-ansi');
 
 const app = express();
 const server = http.createServer(app);
@@ -54,9 +54,11 @@ io.on('connection', (socket) => {
         readLastLines.read(logFile, 1)
           .then((line) => {
             const logEntry = JSON.parse(line);
-            logEntry.log = stripAnsi(logEntry.log);
+            // TODO: decide whether or not to strip ansi
+            // logEntry.log = stripAnsi(logEntry.log);
             logEntry.containerId = requestedContainerId;
 
+            // TODO: Remove console log
             console.log(logEntry);
 
             socket.emit('newLog', logEntry);
